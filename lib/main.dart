@@ -34,6 +34,17 @@ class MyAppState extends ChangeNotifier {
     notifyListeners();
 
   }
+
+  var favorites = <WordPair>[];
+
+  void toggleFavorite() {
+    if (favorites.contains(current)) {
+      favorites.remove(current);
+    } else {
+      favorites.add(current);
+    }
+    notifyListeners();
+  }
 }
 
 class MyHomePage extends StatelessWidget {
@@ -44,6 +55,13 @@ class MyHomePage extends StatelessWidget {
     var appState = context.watch<MyAppState>();
     var pair = appState.current;
 
+    IconData icon;
+    if (appState.favorites.contains(pair)) {
+      icon = Icons.favorite;
+    } else {
+      icon = Icons.favorite_border;
+    }
+
     return Scaffold(
       body: Center(
         child: Column(
@@ -51,17 +69,44 @@ class MyHomePage extends StatelessWidget {
           children: [
             BigCard(pair: pair),
             const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () {
-                appState.getNext();
-              },
-              child: const Text(
-                'Next',
-                style: TextStyle(
-                  fontSize: 16
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    appState.toggleFavorite();
+                  },
+                  child: Row(
+                    children: [
+                      Icon(
+                        icon,
+                        color: Colors.pink,
+                        size: 24,
+                      ),
+                      const SizedBox(width: 4),
+                      const Text(
+                        'Like',
+                        style: TextStyle(
+                          fontSize: 16
+                        )
+                      )
+                    ]
+                  )
                 ),
-              ),
-            )
+                const SizedBox(width: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    appState.getNext();
+                  },
+                  child: const Text(
+                    'Next',
+                    style: TextStyle(
+                      fontSize: 16
+                    ),
+                  ),
+                ),
+              ]
+            ),
           ],
         )
       ),
