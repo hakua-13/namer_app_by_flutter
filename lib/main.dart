@@ -59,6 +59,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    Widget page;
+    switch (selectedIndex) {
+      case 0:
+      page = const GeneratorPage();
+      break;
+      case 1:
+      page = const Placeholder();
+      break;
+      default:
+      throw UnimplementedError('no widget for $selectedIndex');
+    }
+
     return Scaffold(
       body: Row(
         children: [
@@ -86,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Expanded(
             child: Container(
               color: Theme.of(context).colorScheme.primaryContainer,
-              child: const GeneratorPage(),
+              child: page,
             ),
           ),
         ]
@@ -182,5 +194,24 @@ class GeneratorPage extends StatelessWidget {
           ],
         )
       );
+  }
+}
+
+class Placeholder extends StatelessWidget{
+  const Placeholder({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Hello World',
+            style: TextStyle(fontSize: 32)
+          )
+        ]
+      )
+    );
   }
 }
