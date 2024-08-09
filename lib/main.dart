@@ -51,10 +51,12 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
   @override
-  _MyHomePage createState() => _MyHomePage();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePage extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> {
+  var selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,9 +75,11 @@ class _MyHomePage extends State<MyHomePage> {
                   label: Text("Favorites")
                 )
               ],
-              selectedIndex: 0,
+              selectedIndex: selectedIndex,
               onDestinationSelected: (value) {
-                print('selected $value');
+                setState(() {
+                  selectedIndex = value;
+                });
               }
             )
           ),
