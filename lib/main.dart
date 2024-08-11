@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         ),
-        home: MyHomePage(),
+        home: const MyHomePage(),
       ),
     );
   }
@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
       page = const GeneratorPage();
       break;
       case 1:
-      page = FavoritesPage();
+      page = const FavoritesPage();
       break;
       default:
       throw UnimplementedError('no widget for $selectedIndex');
