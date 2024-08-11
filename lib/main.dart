@@ -65,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
       page = const GeneratorPage();
       break;
       case 1:
-      page = const Placeholder();
+      page = FavoritesPage();
       break;
       default:
       throw UnimplementedError('no widget for $selectedIndex');
@@ -198,20 +198,23 @@ class GeneratorPage extends StatelessWidget {
   }
 }
 
-class Placeholder extends StatelessWidget{
-  const Placeholder({super.key});
+class FavoritesPage extends StatelessWidget{
+  const FavoritesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+    var appState = context.watch<MyAppState>();
+    var favorites = appState.favorites;
+
+    return Center(
+      child: ListView(
         children: [
-          Text(
-            'Hello World',
-            style: TextStyle(fontSize: 32)
-          )
+          for (var favorite in favorites)
+            ListTile(
+              title: Text(favorite.asLowerCase),
+            )
         ]
+
       )
     );
   }
