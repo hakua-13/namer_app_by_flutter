@@ -45,6 +45,10 @@ class MyAppState extends ChangeNotifier {
     }
     notifyListeners();
   }
+  void removeFavorite(WordPair pair) {
+    favorites.remove(pair);
+    notifyListeners();
+  }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -221,13 +225,20 @@ class FavoritesPage extends StatelessWidget{
         ),
         for (var favorite in favorites)
           ListTile(
-            leading: const Icon(Icons.favorite),
+            leading: const Icon(
+              Icons.favorite,
+              color: Colors.pink
+            ),
             title: Text(
               favorite.asLowerCase,
-              style: const TextStyle(fontSize:18)),
+              style: const TextStyle(fontSize:18)
+            ),
+            trailing: const Icon(Icons.delete),
+            onTap: () {
+              appState.removeFavorite(favorite);
+            }
           )
       ]
-    
     );
   }
 }
