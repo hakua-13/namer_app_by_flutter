@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:namer_app_flutter_codelab_first/main.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FavoritesPage extends StatelessWidget{
+import 'package:namer_app_flutter_codelab_first/provider/favorites_provider.dart';
+
+class FavoritesPage extends ConsumerWidget{
   const FavoritesPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
-    var favorites = appState.favorites;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final favorites = ref.watch(favoritesProvider);
+    final favoritesNotifier = ref.watch(favoritesProvider.notifier);
 
     if (favorites.isEmpty) {
       return const Center(
@@ -35,7 +36,7 @@ class FavoritesPage extends StatelessWidget{
             ),
             trailing: const Icon(Icons.delete),
             onTap: () {
-              appState.removeFavorite(favorite);
+              favoritesNotifier.remove(favorite);
             }
           )
       ]

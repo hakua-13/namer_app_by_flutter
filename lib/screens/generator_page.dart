@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:namer_app_flutter_codelab_first/main.dart';
-import 'package:namer_app_flutter_codelab_first/widgets/big_card.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class GeneratorPage extends StatelessWidget {
+import 'package:namer_app_flutter_codelab_first/provider/current_word_provider.dart';
+import 'package:namer_app_flutter_codelab_first/provider/favorites_provider.dart';
+import 'package:namer_app_flutter_codelab_first/widgets/big_card.dart';
+
+class GeneratorPage extends ConsumerWidget {
   const GeneratorPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
-    var pair = appState.current;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentWord = ref.watch(currentWordProvider);
+    final currentWordNotifier = ref.watch(currentWordProvider.notifier);
+    final favorites = ref.watch(favoritesProvider);
+    final favoritesNotifier = ref.watch(favoritesProvider.notifier);
 
     IconData icon;
-    if (appState.favorites.contains(pair)) {
+    if (favorites.contains(currentWord)) {
       icon = Icons.favorite;
     } else {
       icon = Icons.favorite_border;
@@ -22,14 +26,18 @@ class GeneratorPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            BigCard(pair: pair),
+            BigCard(pair: currentWord),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    appState.toggleFavorite();
+                    if(favorites.contains(currentWord)) {
+                      favoritesNotifier.remove(currentWord);
+                    } else {
+                      favoritesNotifier.add(currentWord);
+                    }
                   },
                   child: Row(
                     children: [
@@ -51,7 +59,7 @@ class GeneratorPage extends StatelessWidget {
                 const SizedBox(width: 16),
                 ElevatedButton(
                   onPressed: () {
-                    appState.getNext();
+                    currentWordNotifier.next();
                   },
                   child: const Text(
                     'Next',

@@ -1,11 +1,12 @@
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'package:namer_app_flutter_codelab_first/provider/app_state_provider.dart';
 import 'package:namer_app_flutter_codelab_first/screens/favorites_page.dart';
 import 'package:namer_app_flutter_codelab_first/screens/generator_page.dart';
-import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -14,59 +15,26 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => MyAppState(),
-      child: MaterialApp(
+    return MaterialApp(
         title: 'Namer App',
         theme:  ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         ),
         home: const MyHomePage(),
-      ),
-    );
+      );
   }
 }
 
-class MyAppState extends ChangeNotifier {
-  var current = WordPair.random();
-
-  void getNext() {
-    current = WordPair.random();
-    notifyListeners();
-
-  }
-
-  var favorites = <WordPair>[];
-
-  void toggleFavorite() {
-    if (favorites.contains(current)) {
-      favorites.remove(current);
-    } else {
-      favorites.add(current);
-    }
-    notifyListeners();
-  }
-  void removeFavorite(WordPair pair) {
-    favorites.remove(pair);
-    notifyListeners();
-  }
-}
-
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends ConsumerWidget {
   const MyHomePage({super.key});
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  var selectedIndex = 0;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appState = ref.watch(appStateProvider);
+    final appStateNotifier = ref.watch(appStateProvider.notifier);
     Widget page;
-    switch (selectedIndex) {
+    switch (appState) {
       case 0:
       page = const GeneratorPage();
       break;
@@ -74,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
       page = const FavoritesPage();
       break;
       default:
-      throw UnimplementedError('no widget for $selectedIndex');
+      throw UnimplementedError('no widget for $appState');
     }
     return LayoutBuilder(builder: (context, constraints) {
       return Scaffold(
@@ -93,11 +61,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     label: Text("Favorites")
                   )
                 ],
-                selectedIndex: selectedIndex,
+                selectedIndex: appState,
                 onDestinationSelected: (value) {
-                  setState(() {
-                    selectedIndex = value;
-                  });
+                  appStateNotifier.set(value);
                 }
               )
             ),
